@@ -66,6 +66,12 @@
   /* controls */
   .ctrl{margin-bottom:.8rem}
   .ctrl:last-child{margin-bottom:0}
+  /* two sliders side by side to save vertical space */
+  .ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+  .ctrl-row .ctrl-label{white-space:nowrap}
+  /* inline unit dropdown (e.g. /mo · /yr) */
+  .unit-select{font:inherit;font-size:.7rem;font-weight:600;color:var(--accent);background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0;cursor:pointer;padding:0 .05rem;outline:none;-webkit-appearance:none;appearance:none}
+  .unit-select:hover{border-bottom-color:var(--accent)}
   .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem}
   .ctrl-label{font-size:.78rem;font-weight:500}
   .ctrl-val{font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums}
@@ -129,16 +135,22 @@
     <div class="card dials-card">
       <div class="section">
         <h2>Membership &amp; shipping</h2>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual membership fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="120" step="1" value="49"></div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Number of members</span><span class="ctrl-val" id="v-members"></span></div><input type="range" id="members" min="10" max="2000" step="10" value="250"></div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Shipping · per order</span><span class="ctrl-val" id="v-ship"></span></div><input type="range" id="ship" min="0" max="15" step="0.5" value="5"></div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Free shipping over</span><span class="ctrl-val" id="v-freeover"></span></div><input type="range" id="freeover" min="1" max="6" step="1" value="3"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="120" step="1" value="49"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Members</span><span class="ctrl-val" id="v-members"></span></div><input type="range" id="members" min="10" max="2000" step="10" value="250"></div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Shipping/order</span><span class="ctrl-val" id="v-ship"></span></div><input type="range" id="ship" min="0" max="15" step="0.5" value="5"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Free ship over</span><span class="ctrl-val" id="v-freeover"></span></div><input type="range" id="freeover" min="1" max="6" step="1" value="3"></div>
+        </div>
       </div>
 
       <div class="section">
         <h2>Core coffee · 12oz</h2>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Cost of goods</span><span class="ctrl-val" id="v-cost"></span></div><input type="range" id="cost" min="6" max="16" step="0.25" value="10.5"></div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin on member bags</span><span class="ctrl-val" id="v-margin"></span></div><input type="range" id="margin" min="0" max="60" step="1" value="10"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">COGS</span><span class="ctrl-val" id="v-cost"></span></div><input type="range" id="cost" min="6" max="16" step="0.25" value="10.5"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-margin"></span></div><input type="range" id="margin" min="0" max="60" step="1" value="10"></div>
+        </div>
         <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP · non-member</span><span class="ctrl-val" id="v-retail"></span></div><input type="range" id="retail" min="15" max="30" step="0.5" value="23"></div>
         <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Drinking rate · bags/mo</span><span class="ctrl-val" id="v-rate"></span></div><input type="range" id="rate" min="0.25" max="4" step="0.25" value="1"></div>
       </div>
@@ -149,10 +161,12 @@
           <label class="switch" title="Include Special Projects"><input type="checkbox" id="sp-on" checked><span class="slider"></span></label>
         </div>
         <div class="sp-dials">
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Cost of goods</span><span class="ctrl-val" id="v-spCost"></span></div><input type="range" id="spCost" min="10" max="24" step="0.25" value="15"></div>
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin on member bags</span><span class="ctrl-val" id="v-spMargin"></span></div><input type="range" id="spMargin" min="0" max="60" step="1" value="15"></div>
+          <div class="ctrl-row">
+            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">COGS</span><span class="ctrl-val" id="v-spCost"></span></div><input type="range" id="spCost" min="10" max="24" step="0.25" value="15"></div>
+            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-spMargin"></span></div><input type="range" id="spMargin" min="0" max="60" step="1" value="15"></div>
+          </div>
           <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP · non-member</span><span class="ctrl-val" id="v-spMsrp"></span></div><input type="range" id="spMsrp" min="24" max="34" step="0.5" value="29"></div>
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">SP bags a member grabs / yr</span><span class="ctrl-val" id="v-spBags"></span></div><input type="range" id="spBags" min="0" max="12" step="1" value="4"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Special Project bags <select id="spUnit" class="unit-select"><option value="mo" selected>/mo</option><option value="yr">/yr</option></select></span><span class="ctrl-val" id="v-spBags"></span></div><input type="range" id="spBags" min="0" max="4" step="0.25" value="0.5"></div>
         </div>
       </div>
     </div>
@@ -214,7 +228,7 @@ function read(){return{
   fee:+$('fee').value, members:+$('members').value, ship:+$('ship').value, freeover:+$('freeover').value,
   cost:+$('cost').value, margin:+$('margin').value, retail:+$('retail').value, rate:+$('rate').value,
   spCost:+$('spCost').value, spMargin:+$('spMargin').value, spMsrp:+$('spMsrp').value, spBags:+$('spBags').value,
-  spOn: $('sp-on').checked
+  spUnit: $('spUnit').value, spOn: $('sp-on').checked
 };}
 
 function render(){
@@ -224,7 +238,7 @@ function render(){
   $('v-fee').textContent=usd(s.fee);
   $('v-members').textContent=s.members.toLocaleString();
   $('v-ship').textContent=usd(s.ship,2);
-  $('v-freeover').textContent=s.freeover+' bags/order';
+  $('v-freeover').textContent=s.freeover+' bags';
   $('v-cost').textContent=usd(s.cost,2);
   $('v-margin').textContent=s.margin+'%';
   $('v-retail').textContent=usd(s.retail,2);
@@ -232,7 +246,7 @@ function render(){
   $('v-spCost').textContent=usd(s.spCost,2);
   $('v-spMargin').textContent=s.spMargin+'%';
   $('v-spMsrp').textContent=usd(s.spMsrp,2);
-  $('v-spBags').textContent=s.spBags;
+  $('v-spBags').textContent=Number.isInteger(s.spBags)?s.spBags:s.spBags.toFixed(2);
 
   // SP section dim + toggle-driven visibility
   $('sp-section').classList.toggle('sp-off', !s.spOn);
@@ -247,7 +261,8 @@ function render(){
   // special projects (optional)
   const spMember = s.spCost*(1+s.spMargin/100);
   const spSavePerBag = s.spMsrp-spMember;
-  const spBagsN = s.spOn ? s.spBags : 0;
+  const spBagsPerYr = s.spUnit==='mo' ? s.spBags*12 : s.spBags;
+  const spBagsN = s.spOn ? spBagsPerYr : 0;
   const spSaveYr = spSavePerBag*spBagsN;
   const spMemberYr = spMember*spBagsN;
   const spRetailYr = s.spMsrp*spBagsN;
@@ -273,9 +288,10 @@ function render(){
 
   // SP breakdown subline
   const spLine=$('sp-line');
-  if(s.spOn && s.spBags>0){
+  if(s.spOn && spBagsN>0){
     spLine.classList.remove('hide');
-    $('sp-line-txt').innerHTML = 'includes <strong>'+usd(spSaveYr,2)+'</strong> from '+s.spBags+' Special Project bag'+(s.spBags>1?'s':'')+' (optional)';
+    const n=Math.round(spBagsN*10)/10;
+    $('sp-line-txt').innerHTML = 'includes <strong>'+usd(spSaveYr,2)+'</strong> from '+n+' Special Project bag'+(n===1?'':'s')+'/yr (optional)';
   } else { spLine.classList.add('hide'); }
 
   // shipping subline
@@ -392,6 +408,13 @@ function drawChart(s,m){
 
 ids.forEach(id=>$(id).addEventListener('input',render));
 $('sp-on').addEventListener('change',render);
+// SP bags unit switch — swap the slider range and convert the value so the annual amount is preserved
+$('spUnit').addEventListener('change',()=>{
+  const u=$('spUnit').value, sl=$('spBags'), cur=+sl.value;
+  if(u==='mo'){ sl.min=0; sl.max=4; sl.step=0.25; sl.value=Math.min(4, Math.round((cur/12)/0.25)*0.25); }
+  else { sl.min=0; sl.max=24; sl.step=1; sl.value=Math.min(24, Math.max(0, Math.round(cur*12))); }
+  render();
+});
 // redraw to fill the box whenever the chart's container changes size
 if(window.ResizeObserver){ new ResizeObserver(()=>render()).observe($('chart').parentElement); }
 render();
