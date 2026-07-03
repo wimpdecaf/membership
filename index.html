@@ -26,8 +26,8 @@
     height:100vh;overflow:hidden;
   }
   .wrap{max-width:2560px;width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;min-height:0}
-  /* dials can be many — scroll them inside their own column, never the page */
-  .dials-card{overflow-y:auto}
+  /* three stacked dial panels — scroll inside their own column, never the page */
+  .dialcol{display:flex;flex-direction:column;gap:1rem;min-height:0;overflow-y:auto}
 
   header{display:flex;align-items:baseline;justify-content:space-between;gap:1.25rem;margin-bottom:0.9rem;flex-wrap:wrap}
   .head-l .kicker{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.2rem}
@@ -39,7 +39,7 @@
     html,body{height:auto}
     body{display:block;overflow:visible}
     .wrap{min-height:auto;flex:none}
-    .dials-card{overflow:visible}
+    .dialcol{overflow:visible}
     .grid{grid-template-columns:1fr;align-items:start}
     .chart-hold{aspect-ratio:76/42;min-height:16rem}
   }
@@ -47,9 +47,7 @@
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.15rem;display:flex;flex-direction:column}
   .card h2{font-size:.6875rem;font-weight:600;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;margin-bottom:.9rem}
 
-  /* dial sections */
-  .section{margin-bottom:.2rem}
-  .section + .section{border-top:1px solid var(--border);padding-top:.9rem;margin-top:.9rem}
+  /* SP card header row (title + toggle) */
   .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
   .section-head h2{margin-bottom:0}
 
@@ -63,16 +61,17 @@
   .sp-dials{transition:opacity .18s}
   .sp-off .sp-dials{opacity:.3;pointer-events:none;filter:grayscale(1)}
 
-  /* controls */
-  .ctrl{margin-bottom:.8rem}
-  .ctrl:last-child{margin-bottom:0}
+  /* controls — label sits close to its slider, more space to the next group */
+  .ctrl{margin-bottom:1.25rem}
+  .ctrl-row .ctrl{margin-bottom:0}
+  .card>*:last-child,.sp-dials>*:last-child{margin-bottom:0}
   /* two sliders side by side to save vertical space */
-  .ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+  .ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem}
   .ctrl-row .ctrl-label{white-space:nowrap}
   /* inline unit dropdown (e.g. /mo · /yr) */
   .unit-select{font:inherit;font-size:.7rem;font-weight:600;color:var(--accent);background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0;cursor:pointer;padding:0 .05rem;outline:none;-webkit-appearance:none;appearance:none}
   .unit-select:hover{border-bottom-color:var(--accent)}
-  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.2rem}
   .ctrl-label{font-size:.78rem;font-weight:500}
   .ctrl-val{font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums}
   input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:.28rem;background:var(--track);border-radius:999px;outline:none;cursor:pointer}
@@ -132,8 +131,8 @@
 
   <div class="grid">
     <!-- CONTROLS -->
-    <div class="card dials-card">
-      <div class="section">
+    <div class="dialcol">
+      <div class="card">
         <h2>Membership &amp; shipping</h2>
         <div class="ctrl-row">
           <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="120" step="1" value="49"></div>
@@ -145,7 +144,7 @@
         </div>
       </div>
 
-      <div class="section">
+      <div class="card">
         <h2>Core coffee · 12oz</h2>
         <div class="ctrl-row">
           <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">COGS</span><span class="ctrl-val" id="v-cost"></span></div><input type="range" id="cost" min="6" max="16" step="0.25" value="10.5"></div>
@@ -155,7 +154,7 @@
         <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Drinking rate · bags/mo</span><span class="ctrl-val" id="v-rate"></span></div><input type="range" id="rate" min="0.25" max="4" step="0.25" value="1"></div>
       </div>
 
-      <div class="section" id="sp-section">
+      <div class="card" id="sp-section">
         <div class="section-head">
           <h2>Special Projects · 8oz</h2>
           <label class="switch" title="Include Special Projects"><input type="checkbox" id="sp-on" checked><span class="slider"></span></label>
@@ -347,7 +346,7 @@ function drawChart(s,m){
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
   const fs=Math.min(Math.max(W/820,0.9),2.0);           // label scale — grows on big screens
-  const padL=44*fs, padR=46*fs, padT=20*fs, padB=38*fs;
+  const padL=44*fs, padR=46*fs, padT=30*fs, padB=38*fs; // extra top room for two floating-label rows
   const plotW=W-padL-padR, plotH=H-padT-padB;
   const maxBags=48;
   const retailAt=n=>s.retail*n + m.spRetailYr;
@@ -376,26 +375,31 @@ function drawChart(s,m){
   let xticks='';
   for(let n=0;n<=maxBags;n+=12){xticks+=`<text x="${X(n).toFixed(1)}" y="${(H-padB+18*fs).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${tickFS}" style="font-variant-numeric:tabular-nums">${n} <tspan fill="#c4c4c8">(${n/12}/mo)</tspan></text>`;}
 
+  // keep floating labels off the y-axis ticks at the left edge and off the right edge
+  const anchorFor=(x)=>{ if(x < padL+56*fs) return ['start',(x+3).toFixed(1)]; if(x > W-padR-56*fs) return ['end',(x-3).toFixed(1)]; return ['middle',x.toFixed(1)]; };
+  const beY=(padT-19*fs).toFixed(1);   // break-even label — upper row
+  const custY=(padT-7*fs).toFixed(1);  // this-customer label — lower row (two rows never collide)
+
   let beMark='';
   if(beValid){const bx=X(be),by=Y(memberAt(be));
-    const beTxt = be<=0.001 ? 'covered' : 'break-even';
+    const [ba,blx]=anchorFor(bx);
     beMark=`<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>
       <circle cx="${bx}" cy="${by}" r="${(4*fs).toFixed(1)}" fill="#fff" stroke="var(--accent)" stroke-width="2"/>
-      <text x="${bx}" y="${(padT-6).toFixed(1)}" text-anchor="middle" fill="var(--accent)" font-size="${tickFS}" font-weight="600">${beTxt}</text>`;}
+      <text x="${blx}" y="${beY}" text-anchor="${ba}" fill="var(--accent)" font-size="${tickFS}" font-weight="600">customer break-even</text>`;}
 
-  // THIS customer marker — moves with core drinking rate; label == the panel's coffee net
+  // THIS customer marker — moves with core drinking rate; label floats at top like break-even
   let custMark='';
   const cb=m.coreBags;
   if(cb<=maxBags){
     const cx=X(cb),cyR=Y(retailAt(cb)),cyM=Y(memberAt(cb));
     const winning=m.net>=0;
-    const labX=cx>W-140?cx-8:cx+8, anchor=cx>W-140?'end':'start';
+    const [ca,clx]=anchorFor(cx);
     const custLbl = m.net>=0 ? '+'+usd(m.net,2)+' saved/yr' : usd(-m.net,2)+' lost/yr';
     custMark=`<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT+plotH}" stroke="var(--fg)" stroke-width="1.5"/>
       <line x1="${cx}" y1="${cyR}" x2="${cx}" y2="${cyM}" stroke="var(--fg)" stroke-width="2" opacity=".25"/>
       <circle cx="${cx}" cy="${cyR}" r="${(4*fs).toFixed(1)}" fill="var(--muted-2)"/>
       <circle cx="${cx}" cy="${cyM}" r="${(4.5*fs).toFixed(1)}" fill="var(--fg)"/>
-      <text x="${labX}" y="${((cyR+cyM)/2+4).toFixed(1)}" text-anchor="${anchor}" fill="${winning?'var(--good)':'var(--bad)'}" font-size="${tickFS}" font-weight="700">${custLbl}</text>`;
+      <text x="${clx}" y="${custY}" text-anchor="${ca}" fill="${winning?'var(--good)':'var(--bad)'}" font-size="${tickFS}" font-weight="700">${custLbl}</text>`;
   }
 
   svg.innerHTML=`${ticks}
@@ -403,7 +407,7 @@ function drawChart(s,m){
     <path d="${line(retailAt)}" fill="none" stroke="var(--muted-2)" stroke-width="2" stroke-dasharray="5 4"/>
     <path d="${line(memberAt)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
     ${beMark}${custMark}${xticks}
-    <text x="${(padL+plotW/2).toFixed(1)}" y="${(H-4).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${axisFS}">bags per year (core)</text>`;
+    <text x="${(padL+plotW/2).toFixed(1)}" y="${(H-4).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${axisFS}">${s.spOn?'core bags per year':'bags per year'}</text>`;
 }
 
 ids.forEach(id=>$(id).addEventListener('input',render));
