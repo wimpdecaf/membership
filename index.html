@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wimp Membership — Napkin Math</title>
+<style>
+  /* Fluid root: everything sized in rem scales with this one lever.
+     Grows the whole UI — fonts, spacing, columns — on wide monitors. */
+  html{font-size:clamp(15px, 0.55vw + 10.5px, 30px);}
+
+  :root{
+    --bg:#ffffff;--card:#ffffff;--border:#e4e4e7;--fg:#18181b;
+    --muted:#71717a;--muted-2:#a1a1aa;--track:#f4f4f5;
+    --accent:#ec5f1a;--accent-soft:#fdeee6;--good:#16a34a;--bad:#dc2626;
+    --shadow:0 1px 2px 0 rgba(0,0,0,.05);--radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--fg);line-height:1.45;-webkit-font-smoothing:antialiased;
+    font-size:1rem;
+    padding:clamp(14px,1.4vw,40px) clamp(16px,2vw,64px);
+    display:flex;flex-direction:column;
+    /* min-height (not height) so tall content on short/wide screens scrolls
+       instead of colliding — fills the viewport exactly when it fits. */
+    min-height:100vh;
+  }
+  .wrap{max-width:2560px;width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;min-height:0}
+
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:1.25rem;margin-bottom:0.9rem;flex-wrap:wrap}
+  .head-l .kicker{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.2rem}
+  h1{font-size:1.375rem;font-weight:700;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:.84rem;margin-top:.15rem;max-width:39rem}
+
+  .grid{display:grid;grid-template-columns:19rem 1fr 20rem;gap:1rem;flex:1;min-height:0;align-items:stretch}
+  @media(max-width:1100px){
+    html,body{height:auto}
+    body{display:block}
+    .wrap{min-height:auto;flex:none}
+    .grid{grid-template-columns:1fr;align-items:start}
+    .chart-hold{aspect-ratio:76/42;min-height:14rem}
+  }
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.15rem;display:flex;flex-direction:column}
+  .card h2{font-size:.6875rem;font-weight:600;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;margin-bottom:.9rem}
+
+  /* controls */
+  .ctrl{margin-bottom:.85rem}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+  .ctrl-label{font-size:.78rem;font-weight:500}
+  .ctrl-val{font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:.28rem;background:var(--track);border-radius:999px;outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:.95rem;height:.95rem;border-radius:50%;background:#fff;border:2px solid var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border-radius:50%;background:#fff;border:2px solid var(--accent);cursor:pointer}
+  .derived{margin-top:auto;padding-top:.9rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+  .derived .lab{font-size:.78rem;color:var(--muted)}
+  .derived .num{font-size:1.1875rem;font-weight:700;color:var(--fg);font-variant-numeric:tabular-nums}
+
+  /* chart */
+  .chart-card{padding:1rem 1.15rem .6rem}
+  .legend{display:flex;gap:1rem;margin-bottom:.4rem;flex-wrap:wrap}
+  .leg{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted)}
+  .swatch{width:14px;height:3px;border-radius:2px}
+  .chart-hold{flex:1;min-height:0;display:flex}
+  svg{width:100%;height:100%;display:block;overflow:visible}
+  .axis-lab{font-size:11px;fill:var(--muted-2)}
+  .tick-lab{font-size:10.5px;fill:var(--muted-2);font-variant-numeric:tabular-nums}
+
+  /* right column results */
+  .rightcol{display:flex;flex-direction:column;gap:1rem;min-height:0}
+  .rightcol .card{flex:1}
+  .hero-num{font-size:2.375rem;font-weight:800;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+  .hero-cap{font-size:.78rem;color:var(--muted);margin-top:.25rem}
+
+  /* customer price stack — all numbers uniform size + black */
+  .pricestack{margin-bottom:.15rem}
+  .pline{display:flex;align-items:baseline;gap:.55rem;margin-bottom:.4rem}
+  .pline .num,.save-num{font-size:1.6875rem;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--fg);font-variant-numeric:tabular-nums}
+  .p-retail .num{text-decoration:line-through;text-decoration-color:var(--muted-2)}
+  .pline .unit,.save-unit{font-size:.78rem;font-weight:500;color:var(--muted)}
+  .save-block{margin-top:.75rem;padding-top:.9rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:.5rem}
+  .save-line{display:flex;align-items:baseline;gap:.55rem}
+  /* win/lose/accent colour cues — must come after .save-num to override it */
+  .save-num.good{color:var(--good)}
+  .save-num.bad{color:var(--bad)}
+  .save-num.accent{color:var(--accent)}
+  .verdict{margin-top:.75rem;padding:.65rem .75rem;border-radius:9px;font-size:.8125rem;font-weight:500;line-height:1.4}
+  .verdict.win{background:#f0fdf4;color:#15803d}
+  .verdict.lose{background:#fef2f2;color:#b91c1c}
+  .verdict strong{font-weight:700}
+  .rows{margin-top:auto;padding-top:.75rem;border-top:1px solid var(--border)}
+  .row{display:flex;justify-content:space-between;font-size:.8125rem;padding:.25rem 0;color:var(--muted)}
+  .row .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+  .stat-big{font-size:1.875rem;font-weight:800;letter-spacing:-.02em;color:var(--good);font-variant-numeric:tabular-nums;line-height:1}
+  .foot{margin-top:1rem;flex-shrink:0;font-size:.6875rem;color:var(--muted-2);line-height:1.5;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="head-l">
+      <div class="kicker">Wimp Decaf · Membership</div>
+      <h1>Does a membership make sense?</h1>
+      <p class="sub">Members pay a yearly fee, then buy bags at your cost + margin instead of retail. Drag the dials.</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- CONTROLS -->
+    <div class="card">
+      <h2>The dials</h2>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Cost of goods · 12oz bag</span><span class="ctrl-val" id="v-cost"></span></div><input type="range" id="cost" min="6" max="16" step="0.25" value="10.5"></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin on member bags</span><span class="ctrl-val" id="v-margin"></span></div><input type="range" id="margin" min="0" max="60" step="1" value="10"></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual membership fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="120" step="1" value="49"></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Number of members</span><span class="ctrl-val" id="v-members"></span></div><input type="range" id="members" min="10" max="2000" step="10" value="250"></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Their drinking rate · bags/mo</span><span class="ctrl-val" id="v-rate"></span></div><input type="range" id="rate" min="0.25" max="4" step="0.25" value="1"></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Retail price · non-member</span><span class="ctrl-val" id="v-retail"></span></div><input type="range" id="retail" min="15" max="30" step="0.5" value="23"></div>
+      <div class="derived"><span class="lab">Member pays per bag</span><span class="num" id="member-price"></span></div>
+    </div>
+
+    <!-- CHART -->
+    <div class="card chart-card">
+      <h2 style="margin-bottom:.5rem">Yearly spend — membership vs. retail</h2>
+      <div class="legend">
+        <span class="leg"><span class="swatch" style="background:var(--muted-2)"></span>Pay retail</span>
+        <span class="leg"><span class="swatch" style="background:var(--accent)"></span>Membership</span>
+        <span class="leg"><span class="swatch" style="background:var(--accent-soft);height:10px;border-radius:3px"></span>Member saves</span>
+        <span class="leg"><span class="swatch" style="background:var(--fg);height:10px;width:2px"></span>This customer</span>
+      </div>
+      <div class="chart-hold"><svg id="chart" viewBox="0 0 760 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="rightcol">
+      <div class="card">
+        <h2>For the customer</h2>
+        <div class="pricestack">
+          <div class="pline p-retail"><span class="num" id="ps-retail"></span><span class="unit">/bag · retail</span></div>
+          <div class="pline p-member"><span class="num" id="ps-member"></span><span class="unit">/bag · as a member</span></div>
+        </div>
+        <div class="save-block">
+          <div class="save-line"><span class="save-num accent" id="ps-save-bag"></span><span class="save-unit">saved per bag</span></div>
+          <div class="save-line"><span class="save-num good" id="ps-save-yr"></span><span class="save-unit" id="ps-save-yr-unit">saved per year</span></div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+      <div class="card">
+        <h2>For Wimp · gross margin / yr</h2>
+        <div class="stat-big" id="profit-big"></div>
+        <div class="hero-cap" id="profit-per"></div>
+        <div class="rows">
+          <div class="row"><span>Membership fees</span><span class="v" id="p-fees"></span></div>
+          <div class="row"><span>Margin on bags</span><span class="v" id="p-margin"></span></div>
+          <div class="row"><span>Bags sold / year</span><span class="v" id="p-bags"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">Napkin math. Assumes no bag cap, everyone drinks the same average, and ignores shipping, churn, and overhead — a feel for the shape, not a P&amp;L.</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ids = ['cost','margin','fee','members','rate','retail'];
+const usd = (n,d=0)=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+function read(){return{cost:+$('cost').value,margin:+$('margin').value,fee:+$('fee').value,members:+$('members').value,rate:+$('rate').value,retail:+$('retail').value};}
+
+function render(){
+  const s = read();
+  const memberPrice = s.cost*(1+s.margin/100);
+  const savePerBag = s.retail-memberPrice;
+  const custBags = s.rate*12;
+
+  $('v-cost').textContent=usd(s.cost,2);
+  $('v-margin').textContent=s.margin+'%';
+  $('v-fee').textContent=usd(s.fee);
+  $('v-members').textContent=s.members.toLocaleString();
+  $('v-rate').textContent=s.rate.toFixed(2);
+  $('v-retail').textContent=usd(s.retail,2);
+  $('member-price').textContent=usd(memberPrice,2);
+
+  // customer price stack
+  $('ps-retail').textContent = usd(s.retail,2);
+  $('ps-member').textContent = usd(memberPrice,2);
+  $('ps-save-bag').textContent = usd(Math.max(savePerBag,0),2);
+
+  const beBags = savePerBag>0 ? s.fee/savePerBag : Infinity;
+  const net = savePerBag*custBags - s.fee;   // customer's net at their rate
+  const yrEl=$('ps-save-yr'), yrUnit=$('ps-save-yr-unit');
+  if(net>=0 && savePerBag>0){
+    yrEl.className='save-num good'; yrEl.textContent=usd(net,2); yrUnit.textContent='saved per year';
+  } else {
+    yrEl.className='save-num bad'; yrEl.textContent=usd(Math.max(-net,0),2); yrUnit.textContent='lost per year';
+  }
+
+  const v = $('verdict');
+  if(savePerBag<=0){
+    v.className='verdict lose';
+    v.innerHTML='At this margin the member pays as much as retail — no deal to be had.';
+  } else if(net>=0){
+    v.className='verdict win';
+    v.innerHTML='At <strong>'+s.rate.toFixed(2)+' bags/mo</strong> they come out ahead. Worth it above <strong>'+(beBags/12).toFixed(1)+' bags/mo</strong>.';
+  } else {
+    v.className='verdict lose';
+    v.innerHTML='At <strong>'+s.rate.toFixed(2)+' bags/mo</strong> they’re underwater — needs <strong>'+(beBags/12).toFixed(1)+'+ bags/mo</strong> to win.';
+  }
+
+  // business
+  const bagMarginEach=memberPrice-s.cost;
+  const bagsTotal=custBags*s.members;
+  const feeProfit=s.fee*s.members;
+  const marginProfit=bagMarginEach*bagsTotal;
+  $('profit-big').textContent=usd(feeProfit+marginProfit);
+  $('profit-per').textContent=usd((feeProfit+marginProfit)/s.members,0)+' per member · before shipping & overhead';
+  $('p-fees').textContent=usd(feeProfit);
+  $('p-margin').textContent=usd(marginProfit);
+  $('p-bags').textContent=Math.round(bagsTotal).toLocaleString();
+
+  drawChart(s,memberPrice,savePerBag,beBags,custBags,net);
+}
+
+function drawChart(s,memberPrice,savePerBag,beBags,custBags,net){
+  const W=760,H=420,padL=52,padR=54,padT=22,padB=42;
+  const plotW=W-padL-padR,plotH=H-padT-padB;
+  const maxBags=48;
+  const retailAt=n=>s.retail*n, memberAt=n=>s.fee+memberPrice*n;
+  const yMax=Math.max(retailAt(maxBags),memberAt(maxBags));
+  const niceMax=Math.ceil(yMax/100)*100;
+  const X=n=>padL+(n/maxBags)*plotW;
+  const Y=v=>padT+plotH-(v/niceMax)*plotH;
+  const line=fn=>{let d='';for(let n=0;n<=maxBags;n++){d+=(n===0?'M':'L')+X(n).toFixed(1)+' '+Y(fn(n)).toFixed(1)+' ';}return d;};
+
+  const beValid=isFinite(beBags)&&beBags<=maxBags;
+  let shade='';
+  if(beValid){
+    let top='',bot='';
+    for(let n=beBags;n<=maxBags;n+=0.5)top+=(top===''?'M':'L')+X(n).toFixed(1)+' '+Y(retailAt(n)).toFixed(1)+' ';
+    for(let n=maxBags;n>=beBags;n-=0.5)bot+='L'+X(n).toFixed(1)+' '+Y(memberAt(n)).toFixed(1)+' ';
+    shade=top+bot+'Z';
+  }
+
+  let ticks='';const yT=4;
+  for(let i=0;i<=yT;i++){const val=niceMax*i/yT,y=Y(val);
+    ticks+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#f1f1f3" stroke-width="1"/>`;
+    ticks+=`<text x="${padL-8}" y="${y+3.5}" text-anchor="end" class="tick-lab">$${Math.round(val)}</text>`;}
+  let xticks='';
+  for(let n=0;n<=maxBags;n+=12){xticks+=`<text x="${X(n)}" y="${H-padB+18}" text-anchor="middle" class="tick-lab">${n} <tspan fill="#c4c4c8">(${n/12}/mo)</tspan></text>`;}
+
+  let beMark='';
+  if(beValid){const bx=X(beBags),by=Y(memberAt(beBags));
+    beMark=`<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>
+      <circle cx="${bx}" cy="${by}" r="4" fill="#fff" stroke="var(--accent)" stroke-width="2"/>
+      <text x="${bx}" y="${padT-6}" text-anchor="middle" class="tick-lab" style="fill:var(--accent);font-weight:600">break-even</text>`;}
+
+  // THIS customer marker — moves with drinking rate
+  let custMark='';
+  if(custBags<=maxBags){
+    const cx=X(custBags),cyR=Y(retailAt(custBags)),cyM=Y(memberAt(custBags));
+    const winning=net>=0&&savePerBag>0;
+    const labX=cx>W-140?cx-8:cx+8, anchor=cx>W-140?'end':'start';
+    // match the customer panel exactly: same sign logic, same 2-decimal format
+    const custLbl = savePerBag<=0 ? '' : (net>=0 ? '+'+usd(net,2)+' saved/yr' : usd(Math.abs(net),2)+' lost/yr');
+    custMark=`<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT+plotH}" stroke="var(--fg)" stroke-width="1.5"/>
+      <line x1="${cx}" y1="${cyR}" x2="${cx}" y2="${cyM}" stroke="var(--fg)" stroke-width="2" opacity=".25"/>
+      <circle cx="${cx}" cy="${cyR}" r="4" fill="var(--muted-2)"/>
+      <circle cx="${cx}" cy="${cyM}" r="4.5" fill="var(--fg)"/>
+      <text x="${labX}" y="${(cyR+cyM)/2+4}" text-anchor="${anchor}" class="tick-lab" style="fill:${winning?'var(--good)':'var(--bad)'};font-weight:700">${custLbl}</text>`;
+  }
+
+  $('chart').innerHTML=`${ticks}
+    ${shade?`<path d="${shade}" fill="var(--accent-soft)"/>`:''}
+    <path d="${line(retailAt)}" fill="none" stroke="var(--muted-2)" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="${line(memberAt)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    ${beMark}${custMark}${xticks}
+    <text x="${padL+plotW/2}" y="${H-4}" text-anchor="middle" class="axis-lab">bags per year</text>`;
+}
+
+ids.forEach(id=>$(id).addEventListener('input',render));
+render();
+</script>
+</body>
+</html>
