@@ -22,17 +22,15 @@
     font-size:1rem;
     padding:clamp(14px,1.4vw,40px) clamp(16px,2vw,64px);
     display:flex;flex-direction:column;
-    /* bounded to the viewport so the chart fills the space without runaway height */
     height:100vh;overflow:hidden;
   }
   .wrap{max-width:2560px;width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;min-height:0}
-  /* three stacked dial panels — scroll inside their own column, never the page */
   .dialcol{display:flex;flex-direction:column;gap:1rem;min-height:0;overflow-y:auto}
 
   header{display:flex;align-items:baseline;justify-content:space-between;gap:1.25rem;margin-bottom:0.9rem;flex-wrap:wrap}
   .head-l .kicker{font-size:0.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.2rem}
   h1{font-size:1.375rem;font-weight:700;letter-spacing:-.02em}
-  .sub{color:var(--muted);font-size:.84rem;margin-top:.15rem;max-width:39rem}
+  .sub{color:var(--muted);font-size:.84rem;margin-top:.15rem;max-width:41rem}
 
   .grid{display:grid;grid-template-columns:19rem 1fr 20rem;gap:1rem;flex:1;min-height:0;align-items:stretch}
   @media(max-width:1100px){
@@ -47,7 +45,6 @@
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.15rem;display:flex;flex-direction:column}
   .card h2{font-size:.6875rem;font-weight:600;letter-spacing:.04em;color:var(--muted);text-transform:uppercase;margin-bottom:.9rem}
 
-  /* SP card header row (title + toggle) */
   .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
   .section-head h2{margin-bottom:0}
 
@@ -61,14 +58,12 @@
   .sp-dials{transition:opacity .18s}
   .sp-off .sp-dials{opacity:.3;pointer-events:none;filter:grayscale(1)}
 
-  /* controls — label sits close to its slider, more space to the next group */
+  /* controls — label hugs its slider, more space to the next group */
   .ctrl{margin-bottom:1.25rem}
   .ctrl-row .ctrl{margin-bottom:0}
   .card>*:last-child,.sp-dials>*:last-child{margin-bottom:0}
-  /* two sliders side by side to save vertical space */
   .ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem}
   .ctrl-row .ctrl-label{white-space:nowrap}
-  /* inline unit dropdown (e.g. /mo · /yr) */
   .unit-select{font:inherit;font-size:.7rem;font-weight:600;color:var(--accent);background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0;cursor:pointer;padding:0 .05rem;outline:none;-webkit-appearance:none;appearance:none}
   .unit-select:hover{border-bottom-color:var(--accent)}
   .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.1rem;line-height:1.1}
@@ -77,6 +72,9 @@
   input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:.28rem;margin:0;background:var(--track);border-radius:999px;outline:none;cursor:pointer}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:.95rem;height:.95rem;border-radius:50%;background:#fff;border:2px solid var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer}
   input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border-radius:50%;background:#fff;border:2px solid var(--accent);cursor:pointer}
+  /* derived member price under each coffee's dials */
+  .derived-price{margin-top:.85rem;padding-top:.7rem;border-top:1px solid var(--border);font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;align-items:baseline}
+  .derived-price strong{color:var(--accent);font-weight:700;font-size:.9rem}
 
   /* chart */
   .chart-card{padding:1rem 1.15rem .6rem}
@@ -91,31 +89,27 @@
   /* right column results */
   .rightcol{display:flex;flex-direction:column;gap:1rem;min-height:0}
   .rightcol .card{flex:1}
-  .hero-cap{font-size:.78rem;color:var(--muted);margin-top:.25rem}
+  .hero-cap{font-size:.8rem;color:var(--muted);margin-top:.3rem;line-height:1.4}
+  .stat-big{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+  .stat-big.good{color:var(--good)}
+  .stat-big.bad{color:var(--bad)}
 
-  .pricestack{margin-bottom:.15rem}
-  .pline{display:flex;align-items:baseline;gap:.55rem;margin-bottom:.4rem}
-  .pline .num,.save-num{font-size:1.6875rem;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--fg);font-variant-numeric:tabular-nums}
-  .p-retail .num{text-decoration:line-through;text-decoration-color:var(--muted-2)}
-  .pline .unit,.save-unit{font-size:.78rem;font-weight:500;color:var(--muted)}
-  .save-block{margin-top:.75rem;padding-top:.9rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:.5rem}
-  .save-line{display:flex;align-items:baseline;gap:.55rem}
-  .save-num.good{color:var(--good)}
-  .save-num.bad{color:var(--bad)}
-  .save-num.accent{color:var(--accent)}
-  .subline{font-size:.72rem;color:var(--muted);margin-top:.5rem;display:flex;align-items:center;gap:.4rem}
-  .subline .dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--accent);flex-shrink:0}
-  .subline.ship .dot{background:var(--good)}
+  .pricerows{margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--border)}
+  .row{display:flex;justify-content:space-between;font-size:.8125rem;padding:.28rem 0;color:var(--muted)}
+  .row.hide{display:none}
+  .row .v{font-weight:600;color:var(--good);font-variant-numeric:tabular-nums}
+  .row strong{color:var(--fg);font-weight:700}
+  .subline{font-size:.72rem;color:var(--muted);margin-top:.7rem;display:flex;align-items:center;gap:.4rem}
+  .subline .dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--good);flex-shrink:0}
   .subline.hide{display:none}
   .verdict{margin-top:.75rem;padding:.65rem .75rem;border-radius:9px;font-size:.8125rem;font-weight:500;line-height:1.4}
   .verdict.win{background:#f0fdf4;color:#15803d}
   .verdict.lose{background:#fef2f2;color:#b91c1c}
   .verdict strong{font-weight:700}
   .rows{margin-top:auto;padding-top:.75rem;border-top:1px solid var(--border)}
-  .row{display:flex;justify-content:space-between;font-size:.8125rem;padding:.25rem 0;color:var(--muted)}
-  .row.hide{display:none}
-  .row .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
-  .stat-big{font-size:1.875rem;font-weight:800;letter-spacing:-.02em;color:var(--good);font-variant-numeric:tabular-nums;line-height:1}
+  .brow{display:flex;justify-content:space-between;font-size:.8125rem;padding:.25rem 0;color:var(--muted)}
+  .brow.hide{display:none}
+  .brow .v{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
   .foot{margin-top:1rem;flex-shrink:0;font-size:.6875rem;color:var(--muted-2);line-height:1.5;text-align:center}
 </style>
 </head>
@@ -125,7 +119,7 @@
     <div class="head-l">
       <div class="kicker">Wimp Decaf · Membership</div>
       <h1>Does a membership make sense?</h1>
-      <p class="sub">Members pay a yearly fee, then buy bags at your cost + margin instead of retail. Special Projects are a members-only option — never required. Drag the dials.</p>
+      <p class="sub">Members pay a yearly fee, then buy every bag — core or Special Project — at a member price. The chart shows when the fee pays for itself. Drag anything.</p>
     </div>
   </header>
 
@@ -135,7 +129,7 @@
       <div class="card">
         <h2>Membership &amp; shipping</h2>
         <div class="ctrl-row">
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="120" step="1" value="49"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Annual fee</span><span class="ctrl-val" id="v-fee"></span></div><input type="range" id="fee" min="0" max="150" step="1" value="69"></div>
           <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Members</span><span class="ctrl-val" id="v-members"></span></div><input type="range" id="members" min="10" max="2000" step="10" value="250"></div>
         </div>
         <div class="ctrl-row">
@@ -148,24 +142,30 @@
         <h2>Core coffee · 12oz</h2>
         <div class="ctrl-row">
           <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">COGS</span><span class="ctrl-val" id="v-cost"></span></div><input type="range" id="cost" min="6" max="16" step="0.25" value="10.5"></div>
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-margin"></span></div><input type="range" id="margin" min="0" max="60" step="1" value="10"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-margin"></span></div><input type="range" id="margin" min="0" max="80" step="1" value="33"></div>
         </div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP · non-member</span><span class="ctrl-val" id="v-retail"></span></div><input type="range" id="retail" min="15" max="30" step="0.5" value="23"></div>
-        <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Drinking rate · bags/mo</span><span class="ctrl-val" id="v-rate"></span></div><input type="range" id="rate" min="0.25" max="4" step="0.25" value="1"></div>
+        <div class="ctrl-row">
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP</span><span class="ctrl-val" id="v-retail"></span></div><input type="range" id="retail" min="15" max="32" step="0.5" value="23"></div>
+          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Bags/mo</span><span class="ctrl-val" id="v-rate"></span></div><input type="range" id="rate" min="0.25" max="6" step="0.25" value="2"></div>
+        </div>
+        <div class="derived-price"><span>Member pays</span><span><strong id="d-core-price"></strong> <span id="d-core-save"></span></span></div>
       </div>
 
       <div class="card" id="sp-section">
         <div class="section-head">
-          <h2>Special Projects · 8oz</h2>
+          <h2>Special Projects · 10oz</h2>
           <label class="switch" title="Include Special Projects"><input type="checkbox" id="sp-on" checked><span class="slider"></span></label>
         </div>
         <div class="sp-dials">
           <div class="ctrl-row">
             <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">COGS</span><span class="ctrl-val" id="v-spCost"></span></div><input type="range" id="spCost" min="10" max="24" step="0.25" value="15"></div>
-            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-spMargin"></span></div><input type="range" id="spMargin" min="0" max="60" step="1" value="15"></div>
+            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Margin</span><span class="ctrl-val" id="v-spMargin"></span></div><input type="range" id="spMargin" min="0" max="80" step="1" value="13"></div>
           </div>
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP · non-member</span><span class="ctrl-val" id="v-spMsrp"></span></div><input type="range" id="spMsrp" min="24" max="34" step="0.5" value="29"></div>
-          <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">Special Project bags <select id="spUnit" class="unit-select"><option value="mo" selected>/mo</option><option value="yr">/yr</option></select></span><span class="ctrl-val" id="v-spBags"></span></div><input type="range" id="spBags" min="0" max="4" step="0.25" value="0.5"></div>
+          <div class="ctrl-row">
+            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">MSRP</span><span class="ctrl-val" id="v-spMsrp"></span></div><input type="range" id="spMsrp" min="20" max="36" step="0.5" value="26"></div>
+            <div class="ctrl"><div class="ctrl-head"><span class="ctrl-label">SP bags <select id="spUnit" class="unit-select"><option value="mo" selected>/mo</option><option value="yr">/yr</option></select></span><span class="ctrl-val" id="v-spBags"></span></div><input type="range" id="spBags" min="0" max="4" step="0.25" value="1"></div>
+          </div>
+          <div class="derived-price"><span>Member pays</span><span><strong id="d-sp-price"></strong> <span id="d-sp-save"></span></span></div>
         </div>
       </div>
     </div>
@@ -173,14 +173,13 @@
     <!-- CHART -->
     <div class="card chart-card">
       <div class="chart-title">
-        <h2 style="margin-bottom:0">Yearly spend — membership vs. retail</h2>
-        <span class="blend-note" id="blend-note">+ Special Projects blended in</span>
+        <h2 style="margin-bottom:0">Your first year — membership vs. retail</h2>
+        <span class="blend-note" id="blend-note">incl. Special Projects</span>
       </div>
       <div class="legend">
         <span class="leg"><span class="swatch" style="background:var(--muted-2)"></span>Pay retail</span>
-        <span class="leg"><span class="swatch" style="background:var(--accent)"></span>Membership</span>
-        <span class="leg"><span class="swatch" style="background:var(--accent-soft);height:10px;border-radius:3px"></span>Member saves</span>
-        <span class="leg"><span class="swatch" style="background:var(--fg);height:10px;width:2px"></span>This customer</span>
+        <span class="leg"><span class="swatch" style="background:var(--accent)"></span>As a member</span>
+        <span class="leg"><span class="swatch" style="background:var(--accent-soft);height:10px;border-radius:3px"></span>You save</span>
       </div>
       <div class="chart-hold"><svg id="chart" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg></div>
     </div>
@@ -189,39 +188,37 @@
     <div class="rightcol">
       <div class="card">
         <h2>For the customer</h2>
-        <div class="pricestack">
-          <div class="pline p-retail"><span class="num" id="ps-retail"></span><span class="unit">/bag · retail</span></div>
-          <div class="pline p-member"><span class="num" id="ps-member"></span><span class="unit">/bag · as a member</span></div>
+        <div class="stat-big good" id="save-year"></div>
+        <div class="hero-cap" id="save-cap"></div>
+        <div class="pricerows">
+          <div class="row"><span id="cr-txt"></span><span class="v" id="cr-save"></span></div>
+          <div class="row" id="sp-row"><span id="sr-txt"></span><span class="v" id="sr-save"></span></div>
         </div>
-        <div class="save-block">
-          <div class="save-line"><span class="save-num accent" id="ps-save-bag"></span><span class="save-unit">saved per bag</span></div>
-          <div class="save-line"><span class="save-num good" id="ps-save-yr"></span><span class="save-unit" id="ps-save-yr-unit">saved per year</span></div>
-        </div>
-        <div class="subline" id="sp-line"><span class="dot"></span><span id="sp-line-txt"></span></div>
-        <div class="subline ship" id="ship-line"><span class="dot"></span><span id="ship-line-txt"></span></div>
+        <div class="subline" id="ship-line"><span class="dot"></span><span id="ship-line-txt"></span></div>
         <div class="verdict" id="verdict"></div>
       </div>
       <div class="card">
         <h2>For Wimp · gross margin / yr</h2>
-        <div class="stat-big" id="profit-big"></div>
+        <div class="stat-big good" id="profit-big" style="font-size:1.875rem"></div>
         <div class="hero-cap" id="profit-per"></div>
         <div class="rows">
-          <div class="row"><span>Membership fees</span><span class="v" id="p-fees"></span></div>
-          <div class="row"><span>Margin · core bags</span><span class="v" id="p-margin"></span></div>
-          <div class="row" id="p-spmargin-row"><span>Margin · Special Projects</span><span class="v" id="p-spmargin"></span></div>
-          <div class="row"><span>Bags sold / year</span><span class="v" id="p-bags"></span></div>
+          <div class="brow"><span>Membership fees</span><span class="v" id="p-fees"></span></div>
+          <div class="brow"><span>Margin · core bags</span><span class="v" id="p-margin"></span></div>
+          <div class="brow" id="p-spmargin-row"><span>Margin · Special Projects</span><span class="v" id="p-spmargin"></span></div>
+          <div class="brow"><span>Bags sold / year</span><span class="v" id="p-bags"></span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="foot">Napkin math. Assumes members order monthly, everyone drinks the same average, and ignores churn &amp; overhead — a feel for the shape, not a P&amp;L. Special Projects are optional; the toggle removes them entirely.</p>
+  <p class="foot">Napkin math. Assumes a steady monthly habit and one order a month; ignores churn &amp; overhead — a feel for the shape, not a P&amp;L. Special Projects are optional; the toggle removes them entirely.</p>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 const ids = ['fee','members','ship','freeover','cost','margin','retail','rate','spCost','spMargin','spMsrp','spBags'];
 const usd = (n,d=0)=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = n => Number.isInteger(n) ? usd(n) : usd(n,2);   // drop .00 on round prices
 
 function read(){return{
   fee:+$('fee').value, members:+$('members').value, ship:+$('ship').value, freeover:+$('freeover').value,
@@ -247,55 +244,62 @@ function render(){
   $('v-spMsrp').textContent=usd(s.spMsrp,2);
   $('v-spBags').textContent=Number.isInteger(s.spBags)?s.spBags:s.spBags.toFixed(2);
 
-  // SP section dim + toggle-driven visibility
   $('sp-section').classList.toggle('sp-off', !s.spOn);
   $('blend-note').style.visibility = s.spOn ? 'visible' : 'hidden';
 
-  // core coffee
+  // prices (margin stays the lever — member price is derived and shown)
   const coreMember = s.cost*(1+s.margin/100);
-  const coreSave = s.retail-coreMember;
-  const coreBags = s.rate*12;
-  const coreSaveYr = coreSave*coreBags;
+  const coreSave   = s.retail-coreMember;
+  const spMember   = s.spCost*(1+s.spMargin/100);
+  const spSave     = s.spMsrp-spMember;
 
-  // special projects (optional)
-  const spMember = s.spCost*(1+s.spMargin/100);
-  const spSavePerBag = s.spMsrp-spMember;
-  const spBagsPerYr = s.spUnit==='mo' ? s.spBags*12 : s.spBags;
-  const spBagsN = s.spOn ? spBagsPerYr : 0;
-  const spSaveYr = spSavePerBag*spBagsN;
-  const spMemberYr = spMember*spBagsN;
-  const spRetailYr = s.spMsrp*spBagsN;
+  // habit, in bags per month
+  const coreRate = s.rate;
+  const spRatePerMo = s.spUnit==='mo' ? s.spBags : s.spBags/12;
+  const spRate = s.spOn ? spRatePerMo : 0;
 
-  // shipping — a member perk, shown separately (kept out of the coffee-savings math)
-  const freeShip = s.rate >= s.freeover;
-  const shipYr = freeShip ? 0 : s.ship*12;
+  // per-month economics
+  const retailPerMo = s.retail*coreRate + s.spMsrp*spRate;
+  const memberPerMo = coreMember*coreRate + spMember*spRate;
+  const savePerMo   = coreSave*coreRate + spSave*spRate;
 
-  // customer: savings ON COFFEE (this is what the chart plots)
-  const net = coreSaveYr + spSaveYr - s.fee;
-  const beBags = coreSave>0 ? Math.max((s.fee - spSaveYr)/coreSave, 0) : Infinity;
+  const payback  = savePerMo>0 ? s.fee/savePerMo : Infinity;   // months to recover the fee
+  const yearSave = savePerMo*12 - s.fee;                        // net saved in year one
 
-  $('ps-retail').textContent = usd(s.retail,2);
-  $('ps-member').textContent = usd(coreMember,2);
-  $('ps-save-bag').textContent = usd(Math.max(coreSave,0),2);
+  // derived member-price readouts under the dials
+  $('d-core-price').textContent = money(coreMember)+'/bag';
+  $('d-core-save').textContent  = coreSave>0 ? '· saves '+money(coreSave) : '· no saving';
+  $('d-sp-price').textContent   = money(spMember)+'/bag';
+  $('d-sp-save').textContent    = spSave>0 ? '· saves '+money(spSave) : '· no saving';
 
-  const yrEl=$('ps-save-yr'), yrUnit=$('ps-save-yr-unit');
-  if(net>=0){
-    yrEl.className='save-num good'; yrEl.textContent=usd(net,2); yrUnit.textContent='saved per year on coffee';
+  // customer headline
+  const syEl=$('save-year');
+  syEl.className = 'stat-big '+(yearSave>=0?'good':'bad');
+  syEl.textContent = usd(Math.abs(yearSave),0);
+  let cap;
+  if(savePerMo<=0){
+    cap = 'no per-bag saving at these prices';
+  } else if(payback<=12){
+    cap = 'saved in year one · fee pays off in <strong>month '+payback.toFixed(1)+'</strong>';
   } else {
-    yrEl.className='save-num bad'; yrEl.textContent=usd(-net,2); yrUnit.textContent='lost per year on coffee';
+    cap = 'short of the fee in year one · pays off in month '+payback.toFixed(1);
   }
+  $('save-cap').innerHTML = cap;
 
-  // SP breakdown subline
-  const spLine=$('sp-line');
-  if(s.spOn && spBagsN>0){
-    spLine.classList.remove('hide');
-    const n=Math.round(spBagsN*10)/10;
-    $('sp-line-txt').innerHTML = 'includes <strong>'+usd(spSaveYr,2)+'</strong> from '+n+' Special Project bag'+(n===1?'':'s')+'/yr (optional)';
-  } else { spLine.classList.add('hide'); }
+  // per-bag price rows
+  $('cr-txt').innerHTML = 'Core · '+money(s.retail)+' → <strong>'+money(coreMember)+'</strong>';
+  $('cr-save').textContent = coreSave>0 ? 'save '+money(coreSave)+'/bag' : '—';
+  const spRow=$('sp-row');
+  if(s.spOn){
+    spRow.classList.remove('hide');
+    $('sr-txt').innerHTML = 'SP · '+money(s.spMsrp)+' → <strong>'+money(spMember)+'</strong>';
+    $('sr-save').textContent = spSave>0 ? 'save '+money(spSave)+'/bag' : '—';
+  } else { spRow.classList.add('hide'); }
 
-  // shipping subline
-  const shipLine=$('ship-line');
-  shipLine.classList.remove('hide');
+  // shipping perk line
+  const totalRate = coreRate + spRate;
+  const freeShip = totalRate >= s.freeover;
+  const shipYr = freeShip ? 0 : s.ship*12;
   if(freeShip){
     $('ship-line-txt').innerHTML = '<strong>Free shipping</strong> — orders '+s.freeover+'+ bags qualify';
   } else {
@@ -303,67 +307,61 @@ function render(){
   }
 
   // verdict
-  const v = $('verdict');
-  if(coreSave<=0 && spSaveYr<=0){
+  const v=$('verdict');
+  if(savePerMo<=0){
     v.className='verdict lose';
-    v.innerHTML='At this margin the member pays retail — no deal to be had.';
-  } else if(net>=0){
+    v.innerHTML='At these prices members don’t save — no deal to be had.';
+  } else if(payback<=12){
     v.className='verdict win';
-    const tail = beBags<=0 ? ' Special Projects alone cover the fee.' : ' Worth it above <strong>'+(beBags/12).toFixed(1)+' bags/mo</strong> of core.';
-    v.innerHTML='At <strong>'+s.rate.toFixed(2)+' bags/mo</strong> they come out ahead.'+tail;
+    v.innerHTML='The <strong>'+usd(s.fee)+'</strong> fee pays for itself by <strong>month '+payback.toFixed(1)+'</strong>, then you save <strong>'+money(savePerMo)+'/mo</strong>.';
   } else {
     v.className='verdict lose';
-    const need = isFinite(beBags) ? '<strong>'+(beBags/12).toFixed(1)+'+ bags/mo</strong> of core' : 'more core bags';
-    v.innerHTML='At <strong>'+s.rate.toFixed(2)+' bags/mo</strong> they’re underwater — needs '+need+' (or a few SPs) to win.';
+    v.innerHTML='At this habit the fee takes <strong>'+payback.toFixed(1)+' months</strong> to pay off — more than a year.';
   }
 
   // business (gross margin, before shipping & overhead)
-  const coreMarginEach=coreMember-s.cost;
-  const coreBagsTotal=coreBags*s.members;
-  const coreMarginProfit=coreMarginEach*coreBagsTotal;
-  const spMarginEach=spMember-s.spCost;
-  const spBagsTotal=spBagsN*s.members;
-  const spMarginProfit=spMarginEach*spBagsTotal;
-  const feeProfit=s.fee*s.members;
-  const total=feeProfit+coreMarginProfit+spMarginProfit;
-
+  const feeProfit = s.fee*s.members;
+  const coreMarginYr = (coreMember-s.cost)*coreRate*12*s.members;
+  const spMarginYr   = (spMember-s.spCost)*spRate*12*s.members;
+  const total = feeProfit + coreMarginYr + spMarginYr;
   $('profit-big').textContent=usd(total);
   $('profit-per').textContent=usd(total/s.members,0)+' per member · before shipping & overhead';
   $('p-fees').textContent=usd(feeProfit);
-  $('p-margin').textContent=usd(coreMarginProfit);
-  $('p-spmargin').textContent=usd(spMarginProfit);
+  $('p-margin').textContent=usd(coreMarginYr);
+  $('p-spmargin').textContent=usd(spMarginYr);
   $('p-spmargin-row').classList.toggle('hide', !s.spOn);
-  $('p-bags').textContent=Math.round(coreBagsTotal+spBagsTotal).toLocaleString();
+  $('p-bags').textContent=Math.round(totalRate*12*s.members).toLocaleString();
 
-  drawChart(s,{coreMember,coreSave,coreBags,spRetailYr,spMemberYr,beBags,net});
+  drawChart(s,{fee:s.fee, rpm:retailPerMo, mpm:memberPerMo, payback, yearSave, savePerMo});
 }
 
 function drawChart(s,m){
   const svg=$('chart'), hold=svg.parentElement;
-  // fill the actual box, both dimensions — measure and redraw to real pixels
   const W=Math.max(Math.round(hold.clientWidth||760),300);
   const H=Math.max(Math.round(hold.clientHeight||420),200);
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
-  const fs=Math.min(Math.max(W/820,0.9),2.0);           // label scale — grows on big screens
-  const padL=44*fs, padR=46*fs, padT=30*fs, padB=38*fs; // extra top room for two floating-label rows
+  const fs=Math.min(Math.max(W/820,0.9),2.0);
+  const padL=46*fs, padR=46*fs, padT=30*fs, padB=38*fs;
   const plotW=W-padL-padR, plotH=H-padT-padB;
-  const maxBags=48;
-  const retailAt=n=>s.retail*n + m.spRetailYr;
-  const memberAt=n=>s.fee + m.coreMember*n + m.spMemberYr;
-  const yMax=Math.max(retailAt(maxBags),memberAt(maxBags),1);
-  const niceMax=Math.ceil(yMax/100)*100;
-  const X=n=>padL+(n/maxBags)*plotW;
+  const months=12;
+  const retailCum=t=>m.rpm*t;
+  const memberCum=t=>m.fee+m.mpm*t;
+  const yMax=Math.max(retailCum(months),memberCum(months),1);
+  const niceMax=Math.ceil(yMax/100)*100 || 100;
+  const X=t=>padL+(t/months)*plotW;
   const Y=v=>padT+plotH-(v/niceMax)*plotH;
-  const line=fn=>{let d='';for(let n=0;n<=maxBags;n++){d+=(n===0?'M':'L')+X(n).toFixed(1)+' '+Y(fn(n)).toFixed(1)+' ';}return d;};
+  const line=fn=>{let d='';for(let t=0;t<=months;t++){d+=(t===0?'M':'L')+X(t).toFixed(1)+' '+Y(fn(t)).toFixed(1)+' ';}return d;};
 
-  const be=m.beBags;
-  const beValid=isFinite(be)&&be<=maxBags;
+  const pb=m.payback;
+  const pbValid=isFinite(pb)&&pb>=0&&pb<=months;
+
+  // shade the savings region (retail above member) after payback
   let shade='';
-  if(beValid){
+  if(pbValid){
     let top='',bot='';
-    for(let n=be;n<=maxBags;n+=0.5)top+=(top===''?'M':'L')+X(n).toFixed(1)+' '+Y(retailAt(n)).toFixed(1)+' ';
-    for(let n=maxBags;n>=be;n-=0.5)bot+='L'+X(n).toFixed(1)+' '+Y(memberAt(n)).toFixed(1)+' ';
+    for(let t=pb;t<=months;t+=0.25)top+=(top===''?'M':'L')+X(t).toFixed(1)+' '+Y(retailCum(t)).toFixed(1)+' ';
+    for(let t=months;t>=pb;t-=0.25)bot+='L'+X(t).toFixed(1)+' '+Y(memberCum(t)).toFixed(1)+' ';
     shade=top+bot+'Z';
   }
 
@@ -373,53 +371,47 @@ function drawChart(s,m){
     ticks+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#f1f1f3" stroke-width="1"/>`;
     ticks+=`<text x="${padL-8}" y="${(y+3.5).toFixed(1)}" text-anchor="end" fill="#a1a1aa" font-size="${tickFS}" style="font-variant-numeric:tabular-nums">$${Math.round(val)}</text>`;}
   let xticks='';
-  for(let n=0;n<=maxBags;n+=12){xticks+=`<text x="${X(n).toFixed(1)}" y="${(H-padB+18*fs).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${tickFS}" style="font-variant-numeric:tabular-nums">${n} <tspan fill="#c4c4c8">(${n/12}/mo)</tspan></text>`;}
+  for(let t=0;t<=months;t+=3){xticks+=`<text x="${X(t).toFixed(1)}" y="${(H-padB+18*fs).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${tickFS}" style="font-variant-numeric:tabular-nums">${t}</text>`;}
 
-  // keep floating labels off the y-axis ticks at the left edge and off the right edge
-  const anchorFor=(x)=>{ if(x < padL+56*fs) return ['start',(x+3).toFixed(1)]; if(x > W-padR-56*fs) return ['end',(x-3).toFixed(1)]; return ['middle',x.toFixed(1)]; };
-  const beY=(padT-19*fs).toFixed(1);   // break-even label — upper row
-  const custY=(padT-7*fs).toFixed(1);  // this-customer label — lower row (two rows never collide)
+  const anchorFor=(x)=>{ if(x < padL+58*fs) return ['start',(x+3).toFixed(1)]; if(x > W-padR-58*fs) return ['end',(x-3).toFixed(1)]; return ['middle',x.toFixed(1)]; };
+  const beY=(padT-19*fs).toFixed(1);   // payback label — upper row
+  const custY=(padT-7*fs).toFixed(1);  // savings label — lower row
 
-  let beMark='';
-  if(beValid){const bx=X(be),by=Y(memberAt(be));
-    const [ba,blx]=anchorFor(bx);
-    beMark=`<line x1="${bx}" y1="${padT}" x2="${bx}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>
-      <circle cx="${bx}" cy="${by}" r="${(4*fs).toFixed(1)}" fill="#fff" stroke="var(--accent)" stroke-width="2"/>
-      <text x="${blx}" y="${beY}" text-anchor="${ba}" fill="var(--accent)" font-size="${tickFS}" font-weight="600">customer break-even</text>`;}
+  // payback marker
+  let pbMark='';
+  if(pbValid){const px=X(pb),py=Y(memberCum(pb));
+    const [pa,plx]=anchorFor(px);
+    pbMark=`<line x1="${px}" y1="${padT}" x2="${px}" y2="${padT+plotH}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 4" opacity=".45"/>
+      <circle cx="${px}" cy="${py}" r="${(4.5*fs).toFixed(1)}" fill="#fff" stroke="var(--accent)" stroke-width="2"/>
+      <text x="${plx}" y="${beY}" text-anchor="${pa}" fill="var(--accent)" font-size="${tickFS}" font-weight="600">fee paid off · month ${pb.toFixed(1)}</text>`;}
 
-  // THIS customer marker — moves with core drinking rate; label floats at top like break-even
-  let custMark='';
-  const cb=m.coreBags;
-  if(cb<=maxBags){
-    const cx=X(cb),cyR=Y(retailAt(cb)),cyM=Y(memberAt(cb));
-    const winning=m.net>=0;
-    const [ca,clx]=anchorFor(cx);
-    const custLbl = m.net>=0 ? '+'+usd(m.net,2)+' saved/yr' : usd(-m.net,2)+' lost/yr';
-    custMark=`<line x1="${cx}" y1="${padT}" x2="${cx}" y2="${padT+plotH}" stroke="var(--fg)" stroke-width="1.5"/>
-      <line x1="${cx}" y1="${cyR}" x2="${cx}" y2="${cyM}" stroke="var(--fg)" stroke-width="2" opacity=".25"/>
-      <circle cx="${cx}" cy="${cyR}" r="${(4*fs).toFixed(1)}" fill="var(--muted-2)"/>
-      <circle cx="${cx}" cy="${cyM}" r="${(4.5*fs).toFixed(1)}" fill="var(--fg)"/>
-      <text x="${clx}" y="${custY}" text-anchor="${ca}" fill="${winning?'var(--good)':'var(--bad)'}" font-size="${tickFS}" font-weight="700">${custLbl}</text>`;
-  }
+  // year-end gap marker (right edge) — the savings you walk away with
+  const ex=X(months),eR=Y(retailCum(months)),eM=Y(memberCum(months));
+  const win=m.yearSave>=0;
+  const [ea,elx]=anchorFor(ex);
+  const endLbl = win ? '+'+usd(m.yearSave,0)+' saved yr 1' : usd(-m.yearSave,0)+' short yr 1';
+  const gapMark=`<line x1="${ex}" y1="${eR}" x2="${ex}" y2="${eM}" stroke="var(--fg)" stroke-width="2" opacity=".22"/>
+      <circle cx="${ex}" cy="${eR}" r="${(4*fs).toFixed(1)}" fill="var(--muted-2)"/>
+      <circle cx="${ex}" cy="${eM}" r="${(4*fs).toFixed(1)}" fill="var(--accent)"/>
+      <text x="${elx}" y="${custY}" text-anchor="${ea}" fill="${win?'var(--good)':'var(--bad)'}" font-size="${tickFS}" font-weight="700">${endLbl}</text>`;
 
   svg.innerHTML=`${ticks}
     ${shade?`<path d="${shade}" fill="var(--accent-soft)"/>`:''}
-    <path d="${line(retailAt)}" fill="none" stroke="var(--muted-2)" stroke-width="2" stroke-dasharray="5 4"/>
-    <path d="${line(memberAt)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-    ${beMark}${custMark}${xticks}
-    <text x="${(padL+plotW/2).toFixed(1)}" y="${(H-4).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${axisFS}">${s.spOn?'core bags per year':'bags per year'}</text>`;
+    <path d="${line(retailCum)}" fill="none" stroke="var(--muted-2)" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="${line(memberCum)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    ${pbMark}${gapMark}${xticks}
+    <text x="${(padL+plotW/2).toFixed(1)}" y="${(H-4).toFixed(1)}" text-anchor="middle" fill="#a1a1aa" font-size="${axisFS}">months</text>`;
 }
 
 ids.forEach(id=>$(id).addEventListener('input',render));
 $('sp-on').addEventListener('change',render);
-// SP bags unit switch — swap the slider range and convert the value so the annual amount is preserved
+// SP bags unit switch — swap the slider range and convert the value so the yearly amount is preserved
 $('spUnit').addEventListener('change',()=>{
   const u=$('spUnit').value, sl=$('spBags'), cur=+sl.value;
   if(u==='mo'){ sl.min=0; sl.max=4; sl.step=0.25; sl.value=Math.min(4, Math.round((cur/12)/0.25)*0.25); }
   else { sl.min=0; sl.max=24; sl.step=1; sl.value=Math.min(24, Math.max(0, Math.round(cur*12))); }
   render();
 });
-// redraw to fill the box whenever the chart's container changes size
 if(window.ResizeObserver){ new ResizeObserver(()=>render()).observe($('chart').parentElement); }
 render();
 </script>
